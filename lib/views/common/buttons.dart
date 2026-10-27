@@ -128,11 +128,14 @@ class AccentOrb extends StatefulWidget {
 }
 
 class _AccentOrbState extends State<AccentOrb> with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800));
+  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
+    // Created eagerly: a lazy controller first touched in dispose() would
+    // create its ticker on a deactivated element.
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800));
     if (widget.pulse) _controller.repeat(reverse: true);
   }
 
