@@ -1,58 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'screens/splash_screen.dart';
+import 'package:flutter/services.dart';
 
+import 'app.dart';
+import 'core/theme/app_colors.dart';
+import 'services/database_service.dart';
+import 'services/settings_repository.dart';
+import 'services/test_result_repository.dart';
 
 void main() {
-  runApp(CognitiveFitnessApp());
-}
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: AppColors.background,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
 
-class CognitiveFitnessApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cognitive Fitness App',
-      debugShowCheckedModeBanner: false ,
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue,
-          accentColor: Colors.blueAccent,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme.apply(
-                bodyColor: Colors.blue[900],
-                displayColor: Colors.blue[900],
-              ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
-            shape: RoundedButtonShape(),
-          ),
-        ),
-        scaffoldBackgroundColor: Colors.blue[50],
-      ),
-      home: SplashScreen(),
-    );
-  }
-}
-class RoundedButtonShape extends OutlinedBorder {
-  @override
-  OutlinedBorder copyWith({BorderSide? side}) => this;
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path()..addRRect(RRect.fromRectAndRadius(rect, Radius.circular(12)));
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) => Path()..addRRect(RRect.fromRectAndRadius(rect, Radius.circular(12)));
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) => this;
+  runApp(
+    CognitiveFitnessApp(
+      resultRepository: SqfliteTestResultRepository(DatabaseService()),
+      settingsRepository: PrefsSettingsRepository(),
+    ),
+  );
 }
